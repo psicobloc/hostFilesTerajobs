@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+        <title>Blank App</title>
+        <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+      <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+      <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+      <style>
+      /* Center the loader */
+      #loader {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 1;
+        width: 150px;
+        height: 150px;
+        margin: -75px 0 0 -75px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid #cc33cc;
+        border-bottom: 16px solid #cc33cc;
+        width: 120px;
+        height: 120px;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+      }
+
+      @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      /* Add animation to "page content" */
+      .animate-bottom {
+        position: relative;
+        -webkit-animation-name: animatebottom;
+        -webkit-animation-duration: 1s;
+        animation-name: animatebottom;
+        animation-duration: 1s
+      }
+
+      @-webkit-keyframes animatebottom {
+        from { bottom:-100px; opacity:0 } 
+        to { bottom:0px; opacity:1 }
+      }
+
+      @keyframes animatebottom { 
+        from{ bottom:-100px; opacity:0 } 
+        to{ bottom:0; opacity:1 }
+      }
+
+      * {box-sizing: border-box;}
+
+      /* Button used to open the contact form - fixed at the bottom of the page */
+      .open-button {
+        background-color: #555;
+        color: white;
+        padding: 16px 20px;
+        border: none;
+        cursor: pointer;
+        opacity: 0.8;
+        position: fixed;
+        bottom: 23px;
+        right: 28px;
+        width: 280px;
+      }
+
+      /* The popup form - hidden by default */
+      .form-popup {
+        display: none;
+        position: absolute;
+        left: 21%;
+        top: 35%;
+        /*right: 15px;*/
+        border: 3px solid #f1f1f1;
+        z-index: 9;
+        max-width: 500px;
+        padding: 30px;
+        background-image: linear-gradient(to bottom right, #e085c2, #ffd480);
+      }
+
+      /* Add styles to the form container */
+      .form-container {
+        max-width: 300px;
+        padding: 10px;
+        background-color: white;
+      }
+
+      /* Full-width input fields */
+      .form-container input[type=text], .form-container input[type=password] {
+        width: 100%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        border: none;
+        background: #f1f1f1;
+      }
+
+      /* When the inputs get focus, do something */
+      .form-container input[type=text]:focus, .form-container input[type=password]:focus {
+        background-color: #ddd;
+        outline: none;
+      }
+
+      #myDiv {
+        display: none;
+        text-align: center;
+      }
+          #page1 .page__background{
+            background-image: linear-gradient(to bottom right,#2eb8b8,#00cccc,#00b8e6);
+          }
+          #page2 .page__background{
+            background-image: linear-gradient(to bottom right,#2eb8b8,#00cccc,#00b8e6);
+          }
+          #page3 .page__background{
+            background-image: linear-gradient(to bottom right,#2eb8b8,#00cccc,#00b8e6);
+          }
+          #page4 .page__background{
+            background-image: linear-gradient(to bottom right,#2eb8b8,#00cccc,#00b8e6);
+          }
+      ons-button[modifier="material"] {
+        margin: 4px 0px;
+      }
+      </style>
+      <script>
+        var myVar;
+        var cod,nam,nip;
+        var exPlacas = /[A-Z]{3}-[0-9]{2}-[0-9]{2}/; //expresion regular
+
+		function myFunction() {
+			 console.log(localStorage.getItem("codA"),localStorage.getItem("nipA"));
+			// myVar = setTimeout(showPage, 2000);
+			if(localStorage.getItem("codA") == null && localStorage.getItem("nipA") == null){
+				myVar = setTimeout(showPage, 2000);
+
+			}else{
+				document.querySelector('#myNavigator').pushPage('page3.html').then(()=>{
+               })
+			}
+		}
+
+    ons.ready(function(){
+            if(localStorage.getItem("codA") == null && localStorage.getItem("nipA") == null){
+        myFunction();
+
+      }else{
+        document.querySelector('#myNavigator').pushPage('page3.html').then(()=>{
+               })
+      }
+    })
+
+		function showPage() {
+  			document.getElementById("loader").style.display = "none";
+  			document.getElementById("myDiv").style.display = "block";
+		}
+        function Enviar(){
+          var n1 = document.getElementById("Usuario").value;
+          var n2 = document.getElementById("NIP").value;
+          cod=n1;
+          nip=n2;
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+              if(this.responseText[0] == "0"){
+                ons.notification.alert("error");
+
+              }else{
+              var cadena = this.responseText;
+              var arregloT = cadena.split(',');
+              cod=arregloT[1];
+              nam=arregloT[2];
+              document.getElementById("myForm").style.display = "block";
+            }
+          }
+          };
+        xhttp.open("GET","https://dcc.000webhostapp.com/2018/datosudeg.php?codigo="+n1+"&nip="+n2,true);
+        xhttp.send();
+        }
+        function Crear(){
+                document.querySelector('#myNavigator').pushPage('page2.html').then(()=>{
+              })
+        }
+        function Login(){
+          var a = document.getElementById("Placas").value;
+          var b = document.getElementById("Telefono").value;
+          console.log(a,b);
+          if(a != "" && b != '' && exPlacas.test(a) && b.length >= 8){
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+              if(this.responseText[0] == "0"){
+                ons.notification.alert("error");
+
+              }else{
+              localStorage.setItem("codA", cod);
+              localStorage.setItem("nipA", nip);
+              localStorage.setItem("nomA", nam);
+              console.log(localStorage.getItem("codA"),localStorage.getItem("nipA"));
+              document.getElementById("myForm").style.display = "none";
+              document.querySelector('#myNavigator').pushPage('page3.html').then(()=>{
+                document.getElementById("Nombre").innerHTML=localStorage.getItem("nomA");
+              })
+            }
+          }
+          };
+        xhttp.open("GET","https://cuceimobile.tech/Escuela/altaU.php?codigo="+cod+"&nombre="+nam+"&placas="+a
+          +"&telefono="+b+"&password="+nip,true);
+        xhttp.send();
+    	}else{
+    		ons.notification.alert("error");
+    	}
+        }
+        function Nuevo(){
+          var a = document.getElementById("NPlacas").value;
+          var b = document.getElementById("NTelefono").value;
+          cod= Math.floor(Math.random() * 100);
+          nam= document.getElementById("NNombre").value;
+          nip= document.getElementById("NPass").value;
+          console.log(a,b,cod);
+          if(a != "" && b != '' && nam != '' && nip != '' && exPlacas.test(a) && b.length >= 8){
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+              if(this.responseText[0] == "0" ){
+                ons.notification.alert("error");
+
+              }else{
+              localStorage.setItem("codA", cod);
+              localStorage.setItem("nipA", nip);
+              localStorage.setItem("nomA", nam);
+              document.querySelector('#myNavigator').pushPage('page3.html').then(()=>{
+                document.getElementById("Nombre").innerHTML=localStorage.getItem("nomA");
+              })
+            }
+          }
+          };
+        xhttp.open("GET","https://cuceimobile.tech/Escuela/altaU.php?codigo="+cod+"&nombre="+nam+"&placas="+a
+          +"&telefono="+b+"&password="+nip,true);
+        xhttp.send();
+    	}else{
+    		ons.notification.alert("error");
+    	}
+        }
+  //       document.getElementById("back").onclick = function(event) {
+  // 			// Reset the whole stack instead of popping 1 page
+  // 			localStorage.clear();
+  //             console.log(localStorage.getItem("codA"),localStorage.getItem("nipA"));
+  // 			document.querySelector('ons-navigator').resetToPage('page1.html');
+  // 			// document.querySelector('#myNavigator').pushPage('page1.html').then(()=>{
+  //    //          })
+		// };
+      </script>
+    </head>
+    <body onload="myFunction()">
+      <ons-navigator swipeable id="myNavigator" page="page1.html"></ons-navigator>
+    <template id="page1.html">
+        <ons-page id="page1">
+          <center>
+          	<div id="loader"></div>
+				<div style="display:none;" id="myDiv" class="animate-bottom">
+	          	<br>
+	            <img src="parking.png" alt="Logo Parking" width="200" height="200">
+	            <br>
+	            <h3>Codigo : </h3>
+	            <ons-input input-id="Usuario" placeholder=" " type="text" modifier="underbar"></ons-input>
+	            <br>
+	            <br>
+	            <h3>NIP : </h3>
+	            <ons-input input-id="NIP" placeholder=" " type="password" modifier="underbar"></ons-input>
+	            <br>
+	            <br>
+	            <ons-button id="push-button" modifier="material" onclick="Enviar()">Enviar</ons-button>
+	            <br>
+	            <br>
+	            <br>
+	            <br>
+	            <ons-button id="push-button" modifier="material" onclick="Crear()">Usuario Nuevo</ons-button>
+            	<div class="form-popup" id="myForm">
+			       <h1>Datos</h1>
+			       <br>
+			       <label for="placa"><b>Placas</b></label>
+				   <br>
+				   <ons-input input-id='Placas' type="text" placeholder="ABC-12-12" required></ons-input>
+				   <br>		
+				   <label for="tel"><b>Telefono</b></label>
+				   <br>
+				   <ons-input input-id='Telefono' type="number" placeholder="8 digitos" required></ons-input>
+				   <br>
+				   <ons-button id="push-button" modifier="material" onclick="Login()">Login</ons-button>
+				</div>
+            </div>
+          </center>
+        </ons-page>
+    </template>
+    <template id="page2.html">
+        <ons-page id="page2">
+          <center>
+            <p> Nuevo Usuario</p>
+                <br>
+                <br>
+                <h3>Nombre : </h3>
+                <ons-input input-id="NNombre" placeholder=" " type="text" modifier="underbar"></ons-input>
+                <br>
+                <br>
+                <h3>Password : </h3>
+                <ons-input input-id="NPass" placeholder=" " type="password" modifier="underbar"></ons-input>
+                <br>
+                <br>
+                <h3>Placas : </h3>
+                <ons-input input-id='NPlacas' type="text" placeholder="ABC-12-12" required></ons-input>
+                <br>
+                <br>
+                <h3>Telefono : </h3>
+                <ons-input input-id='NTelefono' type="number" placeholder="8 digitos " required></ons-input>
+                <br>
+                <ons-button id="push-button" modifier="outline" onclick="Nuevo()">Crear</ons-button>
+          <center>
+        </ons-page>
+    </template>
+    <template id="page3.html">
+        <ons-page id="page3">
+        <div class = "left"><ons-back-button id="back">regresar</ons-back-button></div>
+        <script type="text/javascript">
+                  document.getElementById("back").onclick = function(event) {
+        // Reset the whole stack instead of popping 1 page
+        localStorage.clear();
+              console.log(localStorage.getItem("codA"),localStorage.getItem("nipA"));
+        //document.querySelector('ons-navigator').resetToPage('page1.html');
+         document.querySelector('#myNavigator').pushPage('page4.html').then(()=>{
+               })
+    };
+    document.getElementById("Nombre").innerHTML=localStorage.getItem("nomA");
+        </script> 
+          <center>
+            <br>
+            <br>
+            <h3>Nombre : </h3>
+            <h4><label id="Nombre">nombre</label></h4>
+            <br>
+            <br>
+          	<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d686.0331032508597!2d-103.32526943838339!3d20.654750346882185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428b23ab9febd59%3A0x43e72c970acab0ce!2sEstacionamiento%20Alumnos!5e0!3m2!1sen!2smx!4v1570514920913!5m2!1sen!2smx" width="360" height="300" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+          <center>
+        </ons-page>
+    </template>
+        <template id="page4.html">
+        <ons-page id="page4">
+          <center>
+              <br>
+              <img src="parking.png" alt="Logo Parking" width="200" height="200">
+              <br>
+              <h3>Codigo : </h3>
+              <ons-input input-id="Usuario" placeholder=" " type="text" modifier="underbar"></ons-input>
+              <br>
+              <br>
+              <h3>NIP : </h3>
+              <ons-input input-id="NIP" placeholder=" " type="password" modifier="underbar"></ons-input>
+              <br>
+              <br>
+              <ons-button id="push-button" modifier="material" onclick="Enviar()">Enviar</ons-button>
+              <br>
+              <br>
+              <br>
+              <br>
+              <ons-button id="push-button" modifier="material" onclick="Crear()">Usuario Nuevo</ons-button>
+              <div class="form-popup" id="myForm">
+             <h1>Datos</h1>
+             <br>
+             <label for="placa"><b>Placas</b></label>
+           <br>
+           <ons-input input-id='Placas' type="text" placeholder=" " required></ons-input>
+           <br>   
+           <label for="tel"><b>Telefono</b></label>
+           <br>
+           <ons-input input-id='Telefono' type="number" placeholder=" " required></ons-input>
+           <br>
+           <ons-button id="push-button" modifier="material" onclick="Login()">Login</ons-button>
+        </div>
+            </div>
+          </center>
+        </ons-page>
+    </template>
+        <script type="text/javascript" src="cordova.js"></script>
+    </body>
+</html>
